@@ -1,0 +1,67 @@
+
+<div class="add-item-form">
+  <h1><u><b>Add New Item</b></u></h1>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="employeeName">Employee Name/Code:</label>
+            <input type="text" id="employeeName" name="employeeName" class="form-control" [(ngModel)]="formData.employeeName">
+        </div>
+        <div class="form-group">
+            <label for="serviceCode">Service Code/Name:</label>
+            <select id="serviceCode" name="serviceCode" class="form-control" [(ngModel)]="formData.serviceCode">
+                <option value="">--Select--</option>
+                <option value="service1">Service 1</option>
+                <option value="service2">Service 2</option>
+                <option value="service3">Service 3</option>
+                <option value="service4">Service 4</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label for="dor">DOR:</label>
+            <input type="date" id="dor" name="dor" class="form-control" [(ngModel)]="formData.dor">
+        </div>
+        <div class="form-group">
+            <label for="billAmount">Bill Amount:</label>
+            <input type="text" id="billAmount" name="billAmount" class="form-control" [(ngModel)]="formData.billAmount">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label for="userCharges">User Charges:</label>
+            <input type="text" id="userCharges" name="userCharges" class="form-control" [(ngModel)]="formData.userCharges">
+        </div>
+        <div class="form-group">
+            <label for="totalAmount">Total Amount:</label>
+            <input type="text" id="totalAmount" name="totalAmount" class="form-control" [(ngModel)]="formData.totalAmount">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="givenAmountByCustomer">Given Amount By Customer:</label>
+            <input type="text" id="givenAmountByCustomer" name="givenAmountByCustomer" class="form-control" [(ngModel)]="formData.givenAmountByCustomer">
+        </div>
+        <div class="form-group">
+            <label for="refundAmountToCustomer">Refund Amount To Customer:</label>
+            <input type="text" id="refundAmountToCustomer" name="refundAmountToCustomer" class="form-control" [(ngModel)]="formData.refundAmountToCustomer">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="cashLessTransaction">Cash Less Transaction:</label>
+            <input type="text" id="cashLessTransaction" name="cashLessTransaction" class="form-control" [(ngModel)]="formData.cashLessTransaction">
+        </div>
+        <div class="form-group">
+            <label for="customerAmountPendingAmountForUs">Customer Amount Pending For Us:</label>
+            <input type="text" id="customerAmountPendingAmountForUs" name="customerAmountPendingAmountForUs" class="form-control" [(ngModel)]="formData.customerAmountPendingAmountForUs">
+
+        </div>
+    </div>
+    <div class="form-row">
+        <button class="btn btn-primary" (click)="save()">Save</button>
+        <button class="btn btn-secondary" (click)="resetForm()">Reset</button>
+    </div>
+</div>

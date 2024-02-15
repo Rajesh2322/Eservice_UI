@@ -1,0 +1,44 @@
+<!-- amount.component.html -->
+<div class="container">
+<div class="cash-count-form">
+    <table>
+        <thead>
+            <tr>
+                <th>Denomination</th>
+                <th>Count</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let denomination of denominations">
+                <td>Rs. {{ denomination }}</td>
+                <td><input type="number" [(ngModel)]="counts[denomination]" min="0" (input)="calculateAmount()"></td>
+                <td>{{ amounts[denomination] }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <h2>Total Amount: Rs. {{ totalAmount }}</h2>
+    <button [disabled]="isGiven1Disabled()" (click)="sendData('Given 1')">Given 1</button>
+    <button [disabled]="isGiven2Disabled()" (click)="sendData('Given 2')">Given 2</button>
+</div>
+<!-- amount.component.html -->
+<div *ngIf="sentData" class="sent-data">
+    <h3>Sent Data</h3>
+    <p>Denominations: {{ sentData.denominations }}</p>
+    <p>Counts:</p>
+    <ul>
+        <li *ngFor="let denomination of sentData.denominations">
+            Rs. {{ denomination }}: {{ sentData.counts[denomination] }}
+        </li>
+    </ul>
+    <p>Amounts:</p>
+    <ul>
+        <li *ngFor="let denomination of sentData.denominations">
+            Rs. {{ denomination }}: {{ sentData.amounts[denomination] }}
+        </li>
+    </ul>
+    <p>Total Amount: {{ sentData.totalAmount }}</p>
+</div>
+</div>
+
+

@@ -1,0 +1,39 @@
+<h2>View Items</h2>
+
+<table class="items-table">
+  <thead>
+    <tr>
+        <th>S.No</th>
+      <th>Employee Name</th>
+      <th>Service Code</th>
+      <th>DOR</th>
+      <th>Bill Amount</th>
+      <th>User Charges</th>
+      <th>Total Amount</th>
+      <th>Given Amount By Customer</th>
+      <th>Refund Amount To Customer</th>
+      <th>Cash Less Transaction</th>
+      <th>Customer Amount Pending For Us</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let formData of getDisplayedItems() ; let i = index">
+      <td>{{ getSerialNumber(i) }}</td>
+      <td>{{ formData.employeeName }}</td>
+      <td>{{ formData.serviceCode }}</td>
+      <td>{{ formData.dor }}</td>
+      <td>{{ formData.billAmount }}</td>
+      <td>{{ formData.userCharges }}</td>
+      <td>{{ formData.totalAmount }}</td>
+      <td>{{ formData.givenAmountByCustomer }}</td>
+      <td>{{ formData.refundAmountToCustomer }}</td>
+      <td>{{ formData.cashLessTransaction }}</td>
+      <td>{{ formData.customerAmountPendingAmountForUs }}</td>
+    </tr>
+  </tbody>
+</table>
+<div class="pagination">
+    <button (click)="setPage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+    <span>{{ currentPage }} / {{ totalPages }}</span>
+    <button (click)="setPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+  </div>
