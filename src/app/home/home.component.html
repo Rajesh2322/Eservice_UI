@@ -1,0 +1,365 @@
+<div class="header">
+  <div class="logo"><img src="../assets/images/EServices_logo.jpg" alt="E-Services"></div>
+  <!-- <div class="welcome">Welcome, {{username}} (Logged in at {{ loginTime }})</div> -->
+  <div class="welcome">Welcome, {{username}}</div>
+  <div class="links">
+    <a *ngIf="roleName === 'Admin'" href="javascript:void(0);" (click)="openNewAccountForm()">Create New Office</a>
+    <a *ngIf="roleName === 'Admin'" href="javascript:void(0);" (click)="openNewDigitalServiceForm()">Create New Service</a>
+    <a (click)="viewUserProfileDetails()" href="javascript:void(0);">Profile Details</a>
+    <div class="profile-details-popup" *ngIf="showProfileDetails">
+      <p><b>Username:</b> {{ username }}</p>
+      <p><b>Role:</b> {{ role }}</p>
+      <!-- <p><b>phoneNumber:</b> {{ phoneNumber }}</p> -->
+      <button (click)="logout()">Logout</button>
+      <button (click)="hideProfileDetails()">Close</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="tabs">
+  <ul>
+
+
+    <li (click)="selectTab('items')" [class.active]="currentTab === 'items'">Bills</li>
+    <li (click)="selectTab('amount')" [class.active]="currentTab === 'amount'">Amount</li>
+
+
+
+  </ul>
+
+
+  <div class="tab-content">
+    <div *ngIf="currentTab === 'items'">
+      <h2>Items</h2>
+      <div>
+        <label>Select Item Type</label>
+        <select [(ngModel)]="selectedTransactionType" name="transactionType">
+          <option value="" disabled selected>Select Item Type</option>
+          <option value="newItem">Add New Bill</option>
+          <option value="viewItems">View Bills</option>
+          <!-- <option value="RTGS">RTGS</option> -->
+        </select>
+      </div>
+
+      <div *ngIf="selectedTransactionType === 'newItem'">
+        <form (submit)="addNewBill(newItemForm)" #newItemForm="ngForm">
+          <div class="title"><b>Add New Bill</b></div>
+          <div class="form-row">
+            <div class="input-box">
+              <label>Employee Name/Code</label>
+              <input type="text" name="employeeName" placeholder="Employee Name" [(ngModel)]="newItem.employeeName">
+            </div>
+
+
+            <div class="input-box">
+              <label>Service Code/Name</label>
+              <select [(ngModel)]="newItem.serviceCode" name="serviceCode">
+                <option value="" disabled selected>--Select Service--</option>
+                <ng-container *ngFor="let code of serviceCodes">
+                  <option [ngValue]="code.id">{{ code.serviceCode }}</option>
+                </ng-container>
+              </select>
+              
+              
+              
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="input-box">
+              <label>DOR</label>
+              <input type="date" name="dor" [(ngModel)]="newItem.dor" class="form-control">
+            </div>
+
+            <div class="input-box">
+              <label>Bill Amount</label>
+              <input type="number" name="amount" placeholder="Bill Amount"  [(ngModel)]="newItem.amount">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="input-box">
+              <label>User Charges</label>
+              <input type="text" name="userCharges" placeholder="User Charges"  [(ngModel)]="newItem.userCharges">
+            </div>
+
+            <div class="input-box">
+              <label>Total Amount</label>
+              <input type="number" name="totalAmount" placeholder="Total Amount"  [(ngModel)]="newItem.totalAmount">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="input-box">
+              <label>Given Amount By Customer</label>
+              <input type="number" name="givenAmountByCustomer" placeholder="Given Amount By Customer" [(ngModel)]="newItem.givenAmountByCustomer">
+            </div>
+            <div class="input-box">
+              <label>Refund Amount To Customer</label>
+              <input type="number" name="refundAmountToCustomer" placeholder="Refund Amount To Customer" [(ngModel)]="newItem.refundAmountToCustomer">
+            </div>
+
+          </div>
+          <div class="form-row">
+            <div class="input-box">
+              <label>Cash Less Transaction</label>
+              <input type="text" name="cashLessTransaction" placeholder="Cash Less Transaction"  [(ngModel)]="newItem.cashLessTransaction">
+            </div>
+            <div class="input-box">
+              <label>Amount Pending For Us</label>
+              <input type="number" name="custAmountPendingForUs"placeholder="Amount Pending For Us"  [(ngModel)]="newItem.custAmountPendingForUs">
+            </div>
+
+          </div>
+
+
+
+          <div class="button">
+            <input type="submit" [disabled]="newItemForm.invalid" value="Add New">
+          </div>
+          <div class="button">
+            <input type="button" (click)="clearForm(newItemForm)" value="Cancel">
+          </div>
+        </form>
+      </div>
+
+
+
+      <div *ngIf="selectedTransactionType === 'viewItems'">
+        <div class="title"><b>List Of Items</b></div>
+        <div class="row" *ngIf="roleName === 'Admin'">
+          <div class="col-md-2 mb-3" style="width: 35%;">
+            <div class="search-box">
+              <input type="text" name="searchText" class="form-control" placeholder="Search for project..."
+                [(ngModel)]="searchText" (input)="filterServices()">
+
+              <i class="ri-search-line search-icon"></i>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3" style="width: 25%;">
+            <input [(ngModel)]="reportSubmissionDateFilter" id="reportSubmissionDateFilter" type="date"
+              class="form-control col-md-12" (input)="filterServices()" />
+          </div>
+          <div class="col-md-2 mb-3" style="width: 20%;">
+            <button class="btn btn-primary" (click)="exportToExcel()">Export to Excel</button>
+          </div>
+        </div>
+        <table class="table table-bordered table-striped">
+          <thead class="thead-light">
+            <tr>
+              <th>S.No</th>
+              <th>Bill Number</th>
+              <th>Employee Name</th>
+              <th>Service Code</th>
+              <th>Date Of Bill created</th>
+              <th>Bill Amount</th>
+              <th>User Charges</th>
+              <th>Total Amount</th>
+              <th>Given Amount By Customer</th>
+              <th>Refund Amount To Customer</th>
+              <th>Cash Less Transaction</th>
+              <th>Customer Amount Pending For Us</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let transaction of bills | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }; let i = index">
+              <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
+              <td>{{ transaction.id }}</td>
+              <td>{{ transaction.employeeName }}</td>
+              <td>{{ transaction.serviceName }}</td>
+              <td>{{ transaction.dor }}</td>
+              <td>{{ transaction.amount }}</td>
+              <td>{{ transaction.userCharges }}</td>
+              <td>{{ transaction.totalAmount }}</td>
+              <td>{{ transaction.givenAmountByCustomer }}</td>
+              <td>{{ transaction.refundAmountToCustomer }}</td>
+              <td>{{ transaction.cashLessTransaction }}</td>
+              <td>{{ transaction.custAmountPendingForUs }}</td>
+
+            </tr>
+          </tbody>
+        </table>
+
+
+        <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+      </div>
+
+    </div>
+  </div>
+  <div class="tab-content">
+    <div *ngIf="currentTab === 'amount'">
+      <h2>Amounts</h2>
+      <div>
+        <label>Select Amount Type:</label>
+        <select [(ngModel)]="selectedPaymentType" name="paymentType">
+          <option value="" disabled selected>--Select--</option>
+          <option value="GivenAmount">Given Amount</option>
+          <option value="FinalAmount">Final Amount</option>
+          <option value="TotalAmount">Total Amount</option>
+        </select>
+      </div>
+
+      <div *ngIf="selectedPaymentType === 'GivenAmount'" class="custom-givenAmount">
+        <div class="container">
+          <div class="input-box">
+            <label>Service Code/Name</label>
+            <select [(ngModel)]="newItem.serviceCode" name="serviceCode">
+              <option value="" disabled selected>--Select Service--</option>
+              <ng-container *ngFor="let code of serviceCodes">
+                <option [ngValue]="code.id">{{ code.serviceCode }}</option>
+              </ng-container>
+            </select>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Denomination</th>
+                <th>Count</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let denomination of denominations">
+                <td>Rs. {{ denomination }}</td>
+                <td><input type="number" [(ngModel)]="counts[denomination]" min="0" (input)="calculateAmount()"></td>
+                <td>{{ amounts[denomination] }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>Total Amount: Rs. {{ totalAmount }}</h2>
+          <button [disabled]="isGiven1Disabled()" (click)="sendData('Given 1')" [class.disabled]="isGiven1Disabled()">Given 1</button>
+          <button [disabled]="isGiven2Disabled()" (click)="sendData('Given 2')" [class.disabled]="isGiven2Disabled()">Given 2</button>
+        </div>
+      </div>
+
+
+      <div *ngIf="selectedPaymentType === 'FinalAmount'">
+        <div class="title"><b>Deposit Table</b></div>
+        <table class="table table-bordered table-striped">
+          <thead class="thead-light">
+            <tr>
+                  <th>Service Name</th>
+                  <th>Opening Net Wallet</th>
+                  <th>User Chargers</th>
+                  <th>Cashless</th>
+                  <th>Customer Pending</th>
+                  <th>Opening Counter</th>
+                  <th>TopUp</th>
+                  <th>Given1</th>
+                  <th>Given2</th>
+                  <th>Given Total (G1+G2)</th>
+                  <th>Closing Counter</th>
+                  <th>Closing Net Wallet</th>
+                  <th> </th>
+            </tr>
+          </thead>
+          <tbody>
+
+             <ng-container *ngFor="let code of serviceCodes | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }; let i = index">
+   
+            <!-- <ng-container *ngIf="!sentData || sentData.serviceCode !== code"> -->
+              <!-- Render the row with empty cells -->
+              <tr>
+                <td>{{ code.serviceCode}}</td>
+                <td></td> <!-- Empty cell for Opening Net Wallet -->
+                <td></td> <!-- Empty cell for User Chargers -->
+                <td></td> <!-- Empty cell for Cashless -->
+                <td></td> <!-- Empty cell for Customer Pending -->
+                <td></td> <!-- Empty cell for Opening Counter -->
+                <td></td> <!-- Empty cell for TopUp -->
+                <td></td> <!-- Empty cell for Given1 -->
+                <td></td> <!-- Empty cell for Given2 -->
+                <td></td> <!-- Empty cell for Given Total -->
+                <td></td> <!-- Empty cell for Closing Counter -->
+                <td></td> <!-- Empty cell for Closing Net Wallet -->
+                <td>
+                  <table>
+                    <tbody>
+                      <tr *ngFor="let denomination of denominations">
+                        <td>{{ denomination }}</td>
+                        <td>{{ counts[denomination] }}</td>
+                        <!-- <td>{{ amounts[denomination] }}</td> -->
+                      </tr>
+                    </tbody>
+                  </table>
+                </td> <!-- Empty cell for Denomination, Count, and Amount -->
+              </tr>
+            <!-- </ng-container> -->
+          </ng-container>
+          </tbody>
+        </table>
+        <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+      </div>
+      
+
+      <!-- <div *ngIf="selectedPaymentType === 'FinalAmount'">
+        <div class="container">
+          <form (submit)="payNow(payform)" #payform="ngForm">
+            <div class="title">Final Amount</div>
+            <div class="form-group">
+              <label for="mobile_number">Mobile Number:</label>
+              <input type="text" id="mobile_number" name="mobile_number" placeholder="Enter Mobile Number"
+                [(ngModel)]="mobileNumber" required pattern="[0-9]{10}" maxlength="10" />
+              <div *ngIf="payform.controls[' mobileNumber']?.invalid && payform.controls[' mobileNumber']?.touched"
+                class="error-message">
+                Mobile Number is required.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="recharge_amount">Recharge Amount:</label>
+              <input type="text" id="recharge_amount" name="recharge_amount" placeholder="Enter Rechanrge Amount"
+                [(ngModel)]="recharge_amount" required />
+              <div *ngIf="payform.controls['recharge_amount']?.invalid && payform.controls[' recharge_amount']?.touched"
+                class="error-message">
+                Recharge amount is required.
+              </div>
+            </div>
+            <button type="submit" class="btn">Pay Now</button>
+          </form>
+        </div>
+      </div> -->
+
+      <!-- <div *ngIf="selectedPaymentType === 'TotalAmount'">
+        <div class="container">
+          <form (submit)="loan_Pay(loanpayform)" #loanpayform="ngForm">
+            <div class="title">Total Amount</div>
+            <label></label>
+            <div class="form-group">
+              <label for="loanNumber">Loan Number:</label>
+              <input type="text" id="loanNumber" name="loanNumber" placeholder="Enter Loan Number"
+                [(ngModel)]="loanNumber" required pattern="[0-9]{8}" maxlength="8" />
+              <div *ngIf="loanpayform.controls['loanNumber']?.invalid && loanpayform.controls['loanNumber']?.touched"
+                class="error-message">
+                Loan Number is required.
+              </div>
+            </div>
+            <div class="input-box">
+              <label> Account Number</label>
+              <select [(ngModel)]="loanApplication.associatedAccount" name="associatedAccount" required>
+                <option *ngFor="let account of accounts" [value]="account.accountNumber">
+                  {{ account.accountNumber }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="EmiAmount">EMI Amount:</label>
+              <input type="text" id="EmiAmount" name="EmiAmount" placeholder="Enter Emi Amount" [(ngModel)]="EmiAmount"
+                required />
+              <div *ngIf="loanpayform.controls['EmiAmount']?.invalid && loanpayform.controls[' EmiAmount']?.touched"
+                class="error-message">
+                Emi amount is required.
+              </div>
+            </div>
+            <button type="submit" class="btn">Pay Now</button>
+          </form>
+        </div>
+      </div> -->
+    </div>
+  </div>
+
+</div>
+
+
+
+<app-footer></app-footer>

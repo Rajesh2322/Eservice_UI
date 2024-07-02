@@ -1,0 +1,27 @@
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f2f2f2;
+    background: linear-gradient(135deg, #71b7e6, #9b59b6);
+  }
+  
+  .logo img {
+    height: 40px;
+  }
+  
+  .scrolling-text {
+    width: 100%;
+    white-space: nowrap;
+    color: rgb(4, 2, 20);
+  }
+  
+  .login-link a {
+    text-decoration: none;
+    color: hwb(127 91% 6%);
+  }
+  .row {
+    margin-bottom: 20px; /* Adjust the value as per your desired spacing */
+  }
+  

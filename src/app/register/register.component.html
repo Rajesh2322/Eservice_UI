@@ -1,0 +1,175 @@
+<app-header></app-header>
+<div id="signupMessage"></div>
+
+<div class="container">
+  <div class="title">Registration</div>
+  <div class="content">
+    <form (ngSubmit)="register(registerForm)" #registerForm="ngForm">
+      <div class="user-details">
+        <div class="input-box">
+          <span class="details">First Name</span>
+          <input type="text" placeholder="Enter your name" id="firstname" name="firstname" [(ngModel)]="firstName"
+            required>
+          <div *ngIf="registerForm.controls['firstname']?.invalid && registerForm.controls['firstname']?.touched"
+            class="error-message">
+            First Name is required.
+          </div>
+        </div>
+        <div class="input-box">
+          <span class="details">Last Name</span>
+          <input type="text" placeholder="Enter your last name" id="lastName" name="lastName" [(ngModel)]="lastName" required>
+          <div *ngIf="registerForm.controls['lastName']?.invalid && registerForm.controls['lastName']?.touched" class="error-message">
+            Last Name is required.
+          </div>
+        </div>
+        <div class="input-box">
+          <span class="details">User Name</span>
+          <input type="text" placeholder="Enter your user name" id="userName" name="userName" [(ngModel)]="userName" required>
+          <div *ngIf="registerForm.controls['userName']?.invalid && registerForm.controls['userName']?.touched" class="error-message">
+            User Name is required.
+          </div>
+        </div>
+        <!-- <div class="input-box">
+          <span class="details">User Name</span>
+          <input type="text" placeholder="Enter your email" id="email" name="email" [(ngModel)]="email" required email>
+          <div *ngIf="registerForm.controls['email']?.invalid && registerForm.controls['email']?.touched"
+            class="error-message">
+            Valid email is required.
+          </div>
+        </div> -->
+        <!-- <div class="input-box">
+          <span class="details">Phone Number</span>
+          <input type="tel" placeholder="Enter your number" id="phoneNumber" name="phoneNumber"
+            [(ngModel)]="phoneNumber" required pattern="[0-9]{10}">
+          <div *ngIf="registerForm.controls['phoneNumber']?.invalid && registerForm.controls['phoneNumber']?.touched"
+            class="error-message">
+            Phone Number is required (10 digits only).
+          </div>
+        </div> -->
+        <!-- <div class="input-box">
+          <span class="roleName">Role Name(User or Admin)</span>
+          <input type="text" id="roleName" name="roleName" placeholder="Enter your roleName" [(ngModel)]="roleName"
+            required>
+          <div *ngIf="registerForm.controls['roleName']?.invalid && registerForm.controls['roleName']?.touched"
+            class="error-message">
+            Role Name is required.
+          </div>
+        </div> -->
+        <div class="input-box">
+          <span class="details">Branch</span>
+          <div class="custom-select">
+            <select id="branch" name="branch" [(ngModel)]="branch" required>
+              <option *ngFor="let branch of branches" [value]="branch.branchId">{{ branch.branchName }}</option>
+              <!-- Add more branch options as needed -->
+            </select>
+          </div>
+          <div *ngIf="registerForm.controls['branch']?.invalid && registerForm.controls['branch']?.touched" class="error-message">
+            Branch selection is required.
+          </div>
+        </div>
+        <div class="input-box">
+          <span class="details">User Type</span>
+          <div class="custom-select">
+            <select id="accountType" name="accountType" [(ngModel)]="accountType" required>
+              <option *ngFor="let accountType of accountTypes" [value]="accountType.accTypeName">{{ accountType.accTypeName }}</option>
+            </select>
+          </div>
+          <div *ngIf="registerForm.controls['accountType']?.invalid && registerForm.controls['accountType']?.touched" class="error-message">
+            User type selection is required.
+          </div>
+        </div>
+
+        <!-- <div class="input-box">
+          <span class="details">Opening Balance</span>
+          <input type="number" placeholder="Enter your opening balance" id="openingBalance" name="openingBalance" [(ngModel)]="openingBalance" required>
+          <div *ngIf="registerForm.controls['openingBalance']?.invalid && registerForm.controls['openingBalance']?.touched" class="error-message">
+            Opening balance is required.
+          </div>
+        </div> -->
+        
+        <div class="input-box">
+          <span class="details">Password</span>
+          <input type="password" placeholder="Enter your password" id="password" name="password" [(ngModel)]="password"
+            required minlength="8">
+          <div *ngIf="registerForm.controls['password']?.invalid && registerForm.controls['password']?.touched"
+            class="error-message">
+            Password is required (minimum 8 characters).
+          </div>
+        </div>
+        <!-- <div class="input-box">
+          <span class="details">Confirm Password</span>
+          <input type="password" placeholder="Confirm your password" id="confirmPassword" name="confirmPassword"
+            [(ngModel)]="password" required minlength="8" compareValidator="password">
+          <div
+            *ngIf="registerForm.controls['confirmPassword']?.invalid && registerForm.controls['confirmPassword']?.touched"
+            class="error-message">
+            Confirm Password is required (minimum 8 characters).
+          </div>
+         
+        </div> -->
+        <!-- <div class="input-box">
+          <span class="details">Date of Birth</span>
+          <input type="date" id="dateOfBirth" name="dateOfBirth" [(ngModel)]="dateOfBirth" required>
+          <div *ngIf="registerForm.controls['dateOfBirth']?.invalid && registerForm.controls['dateOfBirth']?.touched"
+            class="error-message">
+            Date of Birth is required.
+          </div>
+        </div> -->
+        <!-- <div class="gender-details">
+          <input type="radio" name="gender" id="dot-1" [(ngModel)]="gender" value="Male">
+          <input type="radio" name="gender" id="dot-2" [(ngModel)]="gender" value="Female">
+          <span class="roleName">Gender</span>
+          <div class="category">
+            <label for="dot-1">
+              <span class="dot one"></span>
+              <span class="gender">Male</span>
+            </label>
+            <label for="dot-2">
+              <span class="dot two"></span>
+              <span class="gender">Female</span>
+            </label>
+          </div>
+        </div> -->
+        <!-- <div class="input-box">
+          <span class="details">Gender</span>
+          <div class="custom-select">
+            <select id="gender" name="gender" [(ngModel)]="gender" required>
+             
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+
+            </select>
+          </div>
+          <div *ngIf="registerForm.controls['gender']?.invalid && registerForm.controls['gender']?.touched" class="error-message">
+            Gender is required.
+          </div>
+        </div> -->
+<!-- Add these sections after the Date of Birth field -->
+<!-- <div class="input-box">
+  <span class="details">City</span>
+  <input type="text" placeholder="Enter your city" id="city" name="city" [(ngModel)]="city" required>
+  <div *ngIf="registerForm.controls['city']?.invalid && registerForm.controls['city']?.touched" class="error-message">
+    City is required.
+  </div>
+</div>
+
+<div class="input-box">
+  <span class="details">Occupation</span>
+  <input type="text" placeholder="Enter your occupation" id="occupation" name="occupation" [(ngModel)]="occupation" required>
+  <div *ngIf="registerForm.controls['occupation']?.invalid && registerForm.controls['occupation']?.touched" class="error-message">
+    Occupation is required.
+  </div>
+</div> -->
+
+
+
+      </div>
+      <div class="button">
+        <input type="submit" [disabled]="registerForm.invalid" value="Register">
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<app-footer></app-footer>

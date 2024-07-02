@@ -1,0 +1,114 @@
+.header {
+    background-color: #f2f2f2;
+      background: linear-gradient(135deg, #71b7e6, #9b59b6);
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .logo img {
+    height: 40px;
+  }
+  
+  .links a {
+    color: white;
+    margin-right: 10px;
+  }
+
+  .profile-details-popup {
+    position: absolute;
+    top: 35px;
+    right: 0;
+    background-color: #f6ebeb;
+    border: 1px solid #f6ebeb;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    z-index: 9999;
+  }
+  
+  .profile-details-popup p {
+    margin: 5px 0;
+    color: black;
+  }
+  
+  .profile-details-popup button {
+    padding: 5px 10px;
+    margin-right: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .profile-details-popup button:hover {
+    background-color: #0056b3;
+  }
+  button {
+    background: linear-gradient(135deg, #71b7e6, #9b59b6);
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  button:hover {
+    background-color: darkpurple;
+  }
+
+  /* Existing CSS styles remain the same */
+
+/* CSS styles for the new account form */
+.new-account-form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    width: 25%;
+    margin-left: 500px;
+  }
+  
+  .new-account-form h2 {
+    margin-bottom: 10px;
+  }
+  
+  .new-account-form form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .new-account-form label {
+    margin-bottom: 5px;
+  }
+  
+  .new-account-form select,
+  .new-account-form input {
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .new-account-form button {
+    padding: 8px 15px;
+    margin-top: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .new-account-form button[type="submit"] {
+    background-color: #28a745;
+  }
+  
+  .new-account-form button[type="button"] {
+    background-color: #dc3545;
+  }
+  

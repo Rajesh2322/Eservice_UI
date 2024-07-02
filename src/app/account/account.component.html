@@ -1,0 +1,40 @@
+<div class="header">
+    <div class="logo"><img src="../assets/images/EServices_logo.jpg" alt="E-Services"></div>
+    <!-- <div class="welcome">Welcome, {{username}} (Logged in at {{ loginTime }})</div> -->
+    <div class="welcome">Welcome, {{username}}</div>
+    <div class="links">
+      <a (click)="viewUserProfileDetails()" href="javascript:void(0);">Profile Details</a>
+      <div class="profile-details-popup" *ngIf="showProfileDetails">
+        <p><b>Username:</b> {{ username }}</p>
+        <p><b>Role:</b> {{ role }}</p>
+        <button (click)="logout()">Logout</button>
+        <button (click)="hideProfileDetails()">Close</button>
+      </div>
+      
+    </div>
+  </div>
+
+  <div class="new-account-form" *ngIf="showNewAccountForm">
+    <h2>Add New Office</h2>
+    <form (submit)="submitNewOfficeForm()">
+      <label>Office Type</label>
+      <select [(ngModel)]="newAccount.officeType" name="officeType">
+        <option value="local">Local</option>
+        <option value="remote">Remote</option>
+      </select>
+
+      <label>Office Name</label>
+      <input type="text" name="branch" [(ngModel)]="newAccount.branch">
+
+      <label>Name</label>
+      <input type="text" name="name" [(ngModel)]="newAccount.name">
+
+      <label>Initial Deposit</label>
+      <input type="number" name="initialDeposit" [(ngModel)]="newAccount.initialDeposit">
+
+      <button type="submit">Create</button>
+      <button type="button" (click)="hideNewOfficeForm()">Cancel</button>
+    </form>
+  </div>
+
+  <app-footer></app-footer>
