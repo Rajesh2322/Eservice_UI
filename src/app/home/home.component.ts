@@ -52,11 +52,12 @@ interface billsHistory {
 
 export class HomeComponent implements OnInit {
 
+  formSubmitted = false;
   ///serviceUrl = environment.baseUrl1;
   serviceUrl = environment.baseUrl;
   //serviceCodes: string[] = ["Service 1", "Service 2", "Service 3", "Service 4", "Service 5", "Service 6"];
   serviceCodes: { serviceCode: string, id: number }[] = [];
-
+  serviceNames: string[] = [];
 
   constructor(
     private obsService: ObsService,
@@ -100,6 +101,7 @@ export class HomeComponent implements OnInit {
   searchText = '';
   reportSubmissionDateFilter: string = '';
   loanPay: any = {};
+  billData: any[] = [];
   accounts: any[] = [
     {
       accountNumber: localStorage.getItem('accNo') ?? '',
@@ -125,6 +127,7 @@ export class HomeComponent implements OnInit {
 
     this.loginTime = this.obsService.getLoginTime();
     this.getAllDigitalServices();
+    
     this.refreshData();
    // this.listOfLoans();
     this.viewTransactionHistory()
@@ -133,6 +136,7 @@ export class HomeComponent implements OnInit {
     if (this.currentTab === 'items') {
       this.obsService.getAccountInfo(); // Refresh account summary data
     }
+          
   }
 
   openNewAccountForm() {
@@ -390,11 +394,13 @@ getAllDigitalServices() {
     (response: any[]) => {
       if (response && response.length > 0) {
         this.serviceCodes = response.map((item: any) => ({
-          serviceCode: `${item.serviceCode}-${item.serviceName}`,
+          // serviceCode: `${item.serviceCode}-${item.serviceName}`,
+          serviceCode: `${item.serviceName}`,
           id: item.id
         }));
         this.selectedServiceCode = this.serviceCodes[0].id;
-        
+        this.serviceNames = this.serviceCodes.map(code => code.serviceCode);
+        this.viewDepositList({  serviceNames: this.serviceNames }, this.userId);
       }
     },
     error => {
@@ -420,14 +426,29 @@ getAllDigitalServices() {
       custAmountPendingForUs: null,
     }; // Reset the transfer object as well
   }
+  updateTotalAmount() {
+    const amount = parseFloat(this.newItem.amount) || 0;
+    const userCharges = parseFloat(this.newItem.userCharges) || 0;
+    this.newItem.totalAmount = amount + userCharges;
+    this.updateRefundAmount(); // Update refund amount whenever total amount changes
+  }
 
+  updateRefundAmount() {
+    const totalAmount = parseFloat(this.newItem.totalAmount) || 0;
+    const givenAmountByCustomer = parseFloat(this.newItem.givenAmountByCustomer) || 0;
+    this.newItem.refundAmountToCustomer = givenAmountByCustomer - totalAmount;
+  }
   addNewBill(newItemForm: any) {
-    if (newItemForm && newItemForm.invalid) {
+    this.formSubmitted = true;
+
+    if (newItemForm.invalid) {
+      this.markFormGroupTouched(newItemForm);
+      this.displayErrorMessage('All fields marked with * are mandatory.', 'red');
       return;
     }
     const newItem = {
-      employeeName: this.newItem.employeeName,
-      serviceName: this.newItem.serviceCode,
+      employeeName: this.username,
+      serviceCode: this.newItem.serviceCode,
       dor: this.newItem.dor,
       amount: this.newItem.amount,
       userCharges: this.newItem.userCharges,
@@ -458,11 +479,11 @@ getAllDigitalServices() {
           this.clearForm(newItemForm);
           this.viewTransactionHistory();
           this.selectedTransactionType = 'viewItems';
-
+          this.formSubmitted = false;
         }
       },
       (error) => {
-        console.error('Registration failed!', error.error.msg);
+        console.error('Order bill failed!', error.error.msg);
         if (error.status === 400) {
           if (error.error && error.error.responseMsg) {
             this.displayErrorMessage(error.error.responseMsg, 'red');
@@ -479,7 +500,11 @@ getAllDigitalServices() {
 
   }
 
-
+  markFormGroupTouched(formGroup: any) {
+    Object.keys(formGroup.controls).forEach(key => {
+      formGroup.controls[key].markAsTouched();
+    });
+  }
   onTransactionTypeChange() {
     // Handle tab switching based on selectedTransactionType
     if (this.selectedTransactionType === 'newItem') {
@@ -702,7 +727,7 @@ getAllDigitalServices() {
   serviceCode: string ='';
   // sentData: { denominations: number[], counts: { [key: number]: number }, amounts: { [key: number]: number }, totalAmount: number , serviceCode: string} | null = null;
 
-  sentData: {  counts: { [key: number]: number },  serviceCodeId: any, userId: number} | null = null;
+  sentData: {  counts: { [key: number]: number },  serviceCodeId: any, userId: number, given1Total:any, given2Total:any} | null = null;
 
   calculateAmount(): void {
     for (const denomination of this.denominations) {
@@ -724,14 +749,27 @@ getAllDigitalServices() {
     return now.getHours() < 14; // Disable Given 2 before 2 PM
   }
   sendData(buttonName: string): void {
+
+
+    let given1Total: any;
+    let given2Total: any;
+
+    if (buttonName === 'Given 1') {
+        given1Total = this.totalAmount;
+        given2Total = 0;
+    } else if (buttonName === 'Given 2') {
+        given1Total = 0;
+        given2Total = this.totalAmount;
+    }
+
     this.sentData = {
       serviceCodeId: this.newItem.serviceCode,
-      //denominations: this.denominations,
       userId: this.userId,
-      counts: { ...this.counts }
-      // amounts: { ...this.amounts },
-      // totalAmount: this.totalAmount
+      counts: { ...this.counts },
+      given1Total: given1Total,
+      given2Total: given2Total
     };
+   
     
     const bearerToken = localStorage.getItem('token');
 
@@ -755,7 +793,8 @@ getAllDigitalServices() {
             this.counts[denomination] = 0;
             this.amounts[denomination] = 0;
           }
-          this.viewDepositList(this.newItem.serviceCode, this.userId);
+          this.serviceNames = this.serviceCodes.map(code => code.serviceCode);
+          this.viewDepositList({  serviceNames: this.serviceNames }, this.userId);
           this.selectedPaymentType = 'FinalAmount';
 
         }
@@ -778,7 +817,8 @@ getAllDigitalServices() {
     console.log(`${buttonName} clicked. Data sent.`, this.sentData);
   }
 
-viewDepositList(serviceCodeId: string, userId: string): void {
+  viewDepositList(data: { serviceNames: string[] }, userId: number): void {
+    const payload = { serviceNames: data.serviceNames, userId };
     const bearerToken = localStorage.getItem('token');
   
     if (!bearerToken) {
@@ -790,11 +830,12 @@ viewDepositList(serviceCodeId: string, userId: string): void {
       'Authorization': `Bearer ${bearerToken}`
     });
 
-    this.http.get<any>(`${this.serviceUrl}viewDepositList?serviceCodeId=${serviceCodeId}&userId=${userId}`, { headers }).subscribe(
+   
+this.http.post<any[]>(this.serviceUrl + 'amount/getFinalAmountById', payload, { headers }).subscribe(
       (response) => {
         // Handle successful response
         console.log('Deposit list fetched:', response);
-
+        this.billData = response;
       },
       (error) => {
 
@@ -803,4 +844,9 @@ viewDepositList(serviceCodeId: string, userId: string): void {
       }
     );
   }
+
+  getBillData(serviceCode: string) {
+    return this.billData.find(data => data.serviceName === serviceCode);
+  }
+
 }

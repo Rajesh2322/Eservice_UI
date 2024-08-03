@@ -48,13 +48,12 @@
           <div class="form-row">
             <div class="input-box">
               <label>Employee Name/Code</label>
-              <input type="text" name="employeeName" placeholder="Employee Name" [(ngModel)]="newItem.employeeName">
+              <input type="text" name="employeeName" [(ngModel)]="username" readonly>
             </div>
-
 
             <div class="input-box">
               <label>Service Code/Name</label>
-              <select [(ngModel)]="newItem.serviceCode" name="serviceCode">
+              <select [(ngModel)]="newItem.serviceCode" name="serviceCode" >
                 <option value="" disabled selected>--Select Service--</option>
                 <ng-container *ngFor="let code of serviceCodes">
                   <option [ngValue]="code.id">{{ code.serviceCode }}</option>
@@ -73,29 +72,29 @@
 
             <div class="input-box">
               <label>Bill Amount</label>
-              <input type="number" name="amount" placeholder="Bill Amount"  [(ngModel)]="newItem.amount">
+              <input type="number" name="amount" placeholder="Bill Amount"  [(ngModel)]="newItem.amount" >
             </div>
           </div>
           <div class="form-row">
             <div class="input-box">
               <label>User Charges</label>
-              <input type="text" name="userCharges" placeholder="User Charges"  [(ngModel)]="newItem.userCharges">
+              <input type="text" name="userCharges" placeholder="User Charges"  [(ngModel)]="newItem.userCharges" (input)="updateTotalAmount()">
             </div>
 
             <div class="input-box">
               <label>Total Amount</label>
-              <input type="number" name="totalAmount" placeholder="Total Amount"  [(ngModel)]="newItem.totalAmount">
+              <input type="number" name="totalAmount" placeholder="Total Amount"  [(ngModel)]="newItem.totalAmount" readonly>
             </div>
           </div>
 
           <div class="form-row">
             <div class="input-box">
               <label>Given Amount By Customer</label>
-              <input type="number" name="givenAmountByCustomer" placeholder="Given Amount By Customer" [(ngModel)]="newItem.givenAmountByCustomer">
+              <input type="number" name="givenAmountByCustomer" placeholder="Given Amount By Customer" [(ngModel)]="newItem.givenAmountByCustomer" (input)="updateRefundAmount()">
             </div>
             <div class="input-box">
               <label>Refund Amount To Customer</label>
-              <input type="number" name="refundAmountToCustomer" placeholder="Refund Amount To Customer" [(ngModel)]="newItem.refundAmountToCustomer">
+              <input type="number" name="refundAmountToCustomer" placeholder="Refund Amount To Customer" [(ngModel)]="newItem.refundAmountToCustomer" readonly>
             </div>
 
           </div>
@@ -240,18 +239,20 @@
           <thead class="thead-light">
             <tr>
                   <th>Service Name</th>
-                  <th>Opening Net Wallet</th>
+                  <th>Bill Amount</th>
                   <th>User Chargers</th>
-                  <th>Cashless</th>
-                  <th>Customer Pending</th>
+                  <th>Total Bill</th>
                   <th>Opening Counter</th>
+                  <th>Opening Net Wallet</th>
                   <th>TopUp</th>
+                  <th>Closing Counter</th>
+                  <th>Cashless</th>
                   <th>Given1</th>
                   <th>Given2</th>
                   <th>Given Total (G1+G2)</th>
-                  <th>Closing Counter</th>
-                  <th>Closing Net Wallet</th>
-                  <th> </th>
+                  <th>Pending Amount</th>
+                  <th>Total Amount</th>
+                  <!-- <th> </th> -->
             </tr>
           </thead>
           <tbody>
@@ -262,28 +263,29 @@
               <!-- Render the row with empty cells -->
               <tr>
                 <td>{{ code.serviceCode}}</td>
-                <td></td> <!-- Empty cell for Opening Net Wallet -->
-                <td></td> <!-- Empty cell for User Chargers -->
-                <td></td> <!-- Empty cell for Cashless -->
-                <td></td> <!-- Empty cell for Customer Pending -->
-                <td></td> <!-- Empty cell for Opening Counter -->
-                <td></td> <!-- Empty cell for TopUp -->
-                <td></td> <!-- Empty cell for Given1 -->
-                <td></td> <!-- Empty cell for Given2 -->
-                <td></td> <!-- Empty cell for Given Total -->
-                <td></td> <!-- Empty cell for Closing Counter -->
-                <td></td> <!-- Empty cell for Closing Net Wallet -->
-                <td>
+                <td>{{ getBillData(code.serviceCode)?.billAmount || '0' }}</td> 
+                <td>{{ getBillData(code.serviceCode)?.userCharges || '0' }}</td> 
+                <td>{{ getBillData(code.serviceCode)?.totalAmount || '0' }}</td> 
+                <td>{{ getBillData(code.serviceCode)?.openCounter || '0' }}</td> 
+                <td>{{ getBillData(code.serviceCode)?.openNet || '0' }}</td> 
+                <td>{{ getBillData(code.serviceCode)?.topup || '0' }}</td> 
+                <td>{{ getBillData(code.serviceCode)?.closingCount || '0' }}</td> 
+                <td>{{ getBillData(code.serviceCode)?.cashLess || '0' }}</td>
+                <td>{{ getBillData(code.serviceCode)?.given1 || '0' }}</td> 
+                <td>{{ getBillData(code.serviceCode)?.given2 || '0' }}</td> 
+                <td>{{ getBillData(code.serviceCode)?.givenTotal || '0' }}</td> 
+                <td>{{ getBillData(code.serviceCode)?.pendingAmount || '0' }}</td>
+                <td>{{ getBillData(code.serviceCode)?.total || '0' }}</td>
+                <!-- <td>
                   <table>
                     <tbody>
                       <tr *ngFor="let denomination of denominations">
                         <td>{{ denomination }}</td>
                         <td>{{ counts[denomination] }}</td>
-                        <!-- <td>{{ amounts[denomination] }}</td> -->
                       </tr>
                     </tbody>
                   </table>
-                </td> <!-- Empty cell for Denomination, Count, and Amount -->
+                </td> Empty cell for Denomination, Count, and Amount -->
               </tr>
             <!-- </ng-container> -->
           </ng-container>
