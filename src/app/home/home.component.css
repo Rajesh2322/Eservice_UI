@@ -135,6 +135,18 @@ form {
   flex-wrap: wrap;
   justify-content: space-between;
 }
+
+.new-bill-form-box {
+  border: 1px solid #ccc; /* Adds a box border */
+  padding: 20px; /* Adds space inside the box */
+  background-color: #f9f9f9; /* Light background color for the box */
+  border-radius: 5px; /* Rounded corners for the box */
+  margin-bottom: 20px; /* Adds space below the form */
+  box-sizing: border-box;
+  width: 30%;
+  margin-left: 40%;
+}
+
 .form-row {
   display: flex;
   flex-wrap: wrap;
@@ -250,11 +262,63 @@ form .user-details .input-box{
   text-decoration: underline;
 }
 
-.custom-givenAmount{
-  width: 50%;
-  margin-bottom: 50px;
- 
+
+
+
+
+.custom-givenAmount {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.form-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.container,
+.new-form-container {
+  flex: 1;
+  margin-right: 20px; /* Space between the columns */
+  box-sizing: border-box;
+  border: 1px solid #ccc; /* Adds a box border */
+  padding: 20px; /* Adds space inside the box */
+  background-color: #f9f9f9; /* Light background color for the box */
+  border-radius: 5px; /* Rounded corners for the box */
+}
+
+.container:last-child {
+  margin-right: 0; /* Remove right margin on the last column */
+}
+
+@media (max-width: 1024px) {
+  .container,
+  .new-form-container {
+    flex: 1 1 48%; /* Make columns smaller on smaller screens */
   }
+}
+
+@media (max-width: 768px) {
+  .form-wrapper {
+    flex-direction: column;
+  }
+  .container,
+  .new-form-container {
+    flex: 1 1 100%; /* Stack columns vertically on small screens */
+    margin-right: 0;
+  }
+}
+
+
+
+
+  
+  
+  
 
 
 

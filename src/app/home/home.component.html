@@ -42,13 +42,13 @@
         </select>
       </div>
 
-      <div *ngIf="selectedTransactionType === 'newItem'">
+      <div *ngIf="selectedTransactionType === 'newItem'" class="new-bill-form-box">
         <form (submit)="addNewBill(newItemForm)" #newItemForm="ngForm">
           <div class="title"><b>Add New Bill</b></div>
           <div class="form-row">
             <div class="input-box">
               <label>Employee Name/Code</label>
-              <input type="text" name="employeeName" [(ngModel)]="username" readonly>
+              <input type="text" name="employeeName" placeholder="Employee Name" [(ngModel)]="username" readonly>
             </div>
 
             <div class="input-box">
@@ -199,39 +199,75 @@
       </div>
 
       <div *ngIf="selectedPaymentType === 'GivenAmount'" class="custom-givenAmount">
-        <div class="container">
-          <div class="input-box">
-            <label>Service Code/Name</label>
-            <select [(ngModel)]="newItem.serviceCode" name="serviceCode">
-              <option value="" disabled selected>--Select Service--</option>
-              <ng-container *ngFor="let code of serviceCodes">
-                <option [ngValue]="code.id">{{ code.serviceCode }}</option>
-              </ng-container>
-            </select>
+        <div class="form-wrapper">
+          <!-- Existing Form (First Column) -->
+          <div class="container">
+            <div class="input-box">
+              <label>Service Code/Name</label>
+              <select [(ngModel)]="newItem.serviceCode" name="serviceCode">
+                <option value="" disabled selected>--Select Service--</option>
+                <ng-container *ngFor="let code of serviceCodes">
+                  <option [ngValue]="code.id">{{ code.serviceCode }}</option>
+                </ng-container>
+              </select>
+            </div>
+            
+            <table>
+              <thead>
+                <tr>
+                  <th>Denomination</th>
+                  <th>Count</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let denomination of denominations">
+                  <td>Rs. {{ denomination }}</td>
+                  <td><input type="number" [(ngModel)]="counts[denomination]" min="0" (input)="calculateAmount()"></td>
+                  <td>{{ amounts[denomination] }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <h2>Total Amount: Rs. {{ totalAmount }}</h2>
+            <button [disabled]="isGiven1Disabled()" (click)="sendData('Given 1')" [class.disabled]="isGiven1Disabled()">Given 1</button>
+            <button [disabled]="isGiven2Disabled()" (click)="sendData('Given 2')" [class.disabled]="isGiven2Disabled()">Given 2</button>
           </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Denomination</th>
-                <th>Count</th>
-                <th>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let denomination of denominations">
-                <td>Rs. {{ denomination }}</td>
-                <td><input type="number" [(ngModel)]="counts[denomination]" min="0" (input)="calculateAmount()"></td>
-                <td>{{ amounts[denomination] }}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h2>Total Amount: Rs. {{ totalAmount }}</h2>
-          <button [disabled]="isGiven1Disabled()" (click)="sendData('Given 1')" [class.disabled]="isGiven1Disabled()">Given 1</button>
-          <button [disabled]="isGiven2Disabled()" (click)="sendData('Given 2')" [class.disabled]="isGiven2Disabled()">Given 2</button>
+      
+          <!-- New Form (Second Column) -->
+          <div class="new-form-container">
+            <div class="form-group">
+              <label>Service Code/Name</label>
+              <select [(ngModel)]="newItem.serviceCode" name="serviceCode">
+                <option value="" disabled selected>--Select Service--</option>
+                <ng-container *ngFor="let code of serviceCodes">
+                  <option [ngValue]="code.id">{{ code.serviceCode }}</option>
+                </ng-container>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="openingCounter">Opening Counter</label>
+              <input type="number" id="openingCounter" [(ngModel)]="newItem.openingCounter" name="openingCounter" />
+            </div>
+            <div class="form-group">
+              <label for="openingNetWallet">Opening Net Wallet</label>
+              <input type="number" id="openingNetWallet" [(ngModel)]="newItem.openingNetWallet" name="openingNetWallet" />
+            </div>
+            <div class="form-group">
+              <label for="topUp">TopUp</label>
+              <input type="number" id="topUp" [(ngModel)]="newItem.topUp" name="topUp" />
+            </div>
+            <div class="form-group">
+              <label for="closingCounter">Closing Counter</label>
+              <input type="number" id="closingCounter" [(ngModel)]="newItem.closingCounter" name="closingCounter" />
+            </div>
+            <div class="button-group">
+              <button type="submit">Submit</button>
+              <button type="button">Cancel</button>
+            </div>
+          </div>
         </div>
       </div>
-
+      
 
       <div *ngIf="selectedPaymentType === 'FinalAmount'">
         <div class="title"><b>Deposit Table</b></div>

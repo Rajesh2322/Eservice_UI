@@ -704,12 +704,19 @@ getAllDigitalServices() {
       data: { id: id } // Use data property to store the ID
     });
   }
-  displayErrorMessage(message: string, color: string) {
-    const loginMessage = document.getElementById('loginMessage');
-    if (loginMessage) {
-      loginMessage.textContent = message;
-      loginMessage.style.color = color;
-    }
+  // displayErrorMessage(message: string, color: string) {
+  //   const loginMessage = document.getElementById('loginMessage');
+  //   if (loginMessage) {
+  //     loginMessage.textContent = message;
+  //     loginMessage.style.color = color;
+  //   }
+  // }
+  displayErrorMessage(message: string, color: string): void {
+    this.snackBar.open(message, 'Close', {
+      verticalPosition: 'top',
+      duration: 3000, // Same duration as displaySuccessMessage
+      panelClass: color === 'red' ? ['error-snackbar'] : ['warning-snackbar'] // Custom classes based on color
+    });
   }
   redirectToNewAccountPage() {
     this.router.navigate(['/account']);
@@ -750,6 +757,16 @@ getAllDigitalServices() {
   }
   sendData(buttonName: string): void {
 
+    if (!this.newItem.serviceCode) {
+      this.displayErrorMessage('Please select a service code before proceeding.', 'red');
+      return; // Stop execution if serviceCode is not selected
+    }
+
+    
+    if (this.totalAmount === 0) {
+      this.displayErrorMessage('Please enter the amount before proceeding.', 'red');
+      return; // Stop execution if serviceCode is not selected
+    }
 
     let given1Total: any;
     let given2Total: any;
